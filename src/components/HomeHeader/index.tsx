@@ -6,10 +6,10 @@ type Props = {
 
 export function HomeHeader() {
   return (
-    <HStack>
+    <HStack bg='gray.600' pt={16} pb={5} px={8} alignItems='center' >
       <VStack>
-        <Text color='gray.100'>Olá,</Text>
-        <Heading color='gray.100'>Júnior Dering</Heading>
+        <Text color='gray.100' fontSize='md'>Olá,</Text>
+        <Heading color='gray.100' fontSize='md'>Júnior Dering</Heading>
       </VStack>
     </HStack>
   )
