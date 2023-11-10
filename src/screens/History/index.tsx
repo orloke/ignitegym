@@ -1,6 +1,6 @@
 import { HistoryCard } from '@components/HistoryCard'
 import { ScreenHeader } from '@components/ScreenHeader'
-import { Heading, VStack, SectionList, Text } from 'native-base'
+import { Heading, SectionList, Text, VStack } from 'native-base'
 import { useState } from 'react'
 
 export function History() {
