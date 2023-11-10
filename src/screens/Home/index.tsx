@@ -6,7 +6,13 @@ import { useState } from 'react'
 
 export function Home() {
   const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
-  const [groupSelected, setGroupSelected] = useState('costa')
+  const [exercises, setExercises] = useState([
+    'Puxada frontal',
+    'Remada curvada',
+    'Remada alta',
+    '4',
+  ])
+  const [groupSelected, setGroupSelected] = useState('Costas')
 
   return (
     <VStack flex={1}>
@@ -18,7 +24,9 @@ export function Home() {
         renderItem={({ item }) => (
           <Group
             name={item}
-            isActive={groupSelected == item}
+            isActive={
+              groupSelected.toLocaleUpperCase() == item.toLocaleUpperCase()
+            }
             onPress={() => setGroupSelected(item)}
           />
         )}
@@ -28,16 +36,19 @@ export function Home() {
         maxH={10}
       />
       <VStack flex={1} px={8}>
-        <HStack justifyContent='space-between' mb={5}>
-          <Heading color='gray.200' fontSize='md'>
+        <HStack justifyContent="space-between" mb={5}>
+          <Heading color="gray.200" fontSize="md">
             Exercícios
           </Heading>
-          <Text color='gray.200'>
-            4
-          </Text>
+          <Text color="gray.200">{exercises.length}</Text>
         </HStack>
-        <ExerciseCard />
-        <ExerciseCard />
+        <FlatList
+          data={exercises}
+          renderItem={({ item }) => <ExerciseCard />}
+          keyExtractor={(item) => item}
+          showsVerticalScrollIndicator={false}
+          _contentContainerStyle={{ paddingBottom: 20 }}
+        />
       </VStack>
     </VStack>
   )
