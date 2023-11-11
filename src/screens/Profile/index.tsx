@@ -14,7 +14,7 @@ export function Profile() {
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt={6} px={10}>
           {photoIsLoading ? (
             <Skeleton
@@ -44,17 +44,28 @@ export function Profile() {
           </TouchableOpacity>
           <Input placeholder="Nome" bg="gray.600" />
           <Input placeholder="E-mail" bg="gray.600" isDisabled />
-        </Center>
-
-        <VStack px={10} mt={12} mb={9}>
-          <Heading color="gray.200" fontSize="md" mb={2}>
+          <Heading
+            color="gray.200"
+            fontSize="md"
+            mb={2}
+            mt={12}
+            alignSelf="flex-start"
+          >
             Alterar senha
           </Heading>
           <Input placeholder="Senha antiga" bg="gray.600" secureTextEntry />
-          <Input placeholder="Nova senha antiga" bg="gray.600" secureTextEntry />
-          <Input placeholder="Confirme nova senha antiga" bg="gray.600" secureTextEntry />
-          <Button title='Atualizar' mt={4} />
-        </VStack>
+          <Input
+            placeholder="Nova senha antiga"
+            bg="gray.600"
+            secureTextEntry
+          />
+          <Input
+            placeholder="Confirme nova senha antiga"
+            bg="gray.600"
+            secureTextEntry
+          />
+          <Button title="Atualizar" mt={4} />
+        </Center>
       </ScrollView>
     </VStack>
   )
