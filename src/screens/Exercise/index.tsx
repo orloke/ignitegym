@@ -5,6 +5,7 @@ import {
   Heading,
   Icon,
   Image,
+  ScrollView,
   Text,
   VStack,
 } from 'native-base'
@@ -50,42 +51,44 @@ export function Exercise() {
         </HStack>
       </VStack>
 
-      <VStack p={8}>
-        <Image
-          source={{
-            uri: 'https://thumb.mais.uol.com.br/16669847-large.jpg?ver=0',
-          }}
-          w="full"
-          h={80}
-          rounded="lg"
-          resizeMode="cover"
-          mb={3}
-          alt="Nome do exercício"
-        />
+      <ScrollView>
+        <VStack p={8}>
+          <Image
+            source={{
+              uri: 'https://thumb.mais.uol.com.br/16669847-large.jpg?ver=0',
+            }}
+            w="full"
+            h={80}
+            rounded="lg"
+            resizeMode="cover"
+            mb={3}
+            alt="Nome do exercício"
+          />
 
-        <Box bg="gray.600" rounded="md" pb={4} px={4}>
-          <HStack
-            alignItems="center"
-            justifyContent="space-around"
-            mb={6}
-            mt={5}
-          >
-            <HStack>
-              <SerieSvg />
-              <Text color="gray.200" ml={2}>
-                3 séries
-              </Text>
+          <Box bg="gray.600" rounded="md" pb={4} px={4}>
+            <HStack
+              alignItems="center"
+              justifyContent="space-around"
+              mb={6}
+              mt={5}
+            >
+              <HStack>
+                <SerieSvg />
+                <Text color="gray.200" ml={2}>
+                  3 séries
+                </Text>
+              </HStack>
+              <HStack>
+                <RepetitionsSvg />
+                <Text color="gray.200" ml={2}>
+                  12 repetições
+                </Text>
+              </HStack>
             </HStack>
-            <HStack>
-              <RepetitionsSvg />
-              <Text color="gray.200" ml={2}>
-                12 repetições
-              </Text>
-            </HStack>
-          </HStack>
-          <Button title='Marcar como realizado' />
-        </Box>
-      </VStack>
+            <Button title="Marcar como realizado" />
+          </Box>
+        </VStack>
+      </ScrollView>
     </VStack>
   )
 }
