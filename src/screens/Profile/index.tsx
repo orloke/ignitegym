@@ -4,21 +4,42 @@ import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { Center, Heading, Skeleton, Text, VStack } from 'native-base'
 import { useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
 
 const PHOTO_SIZE = 33
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
+  const [userPhoto, setUserPhoto] = useState('https://github.com/orloke.png')
 
   const handleUserPhotoSelect = async () => {
-    await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      aspect: [4, 4],
-      allowsEditing: true,
-    })
+    setPhotoIsLoading(true)
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
+
+      if (!photoSelected.canceled) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          photoSelected.assets[0].uri
+        )
+        if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5) {
+          return Alert.alert(
+            'Essa imagem é muito grande. Escolha uma até 5 MB.'
+          )
+        }
+        setUserPhoto(photoSelected.assets[0].uri)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setPhotoIsLoading(false)
+    }
   }
 
   return (
@@ -36,7 +57,7 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: 'https://github.com/orloke.png' }}
+              source={{ uri: userPhoto }}
               alt="imagem do usuario"
               size={PHOTO_SIZE}
             />
