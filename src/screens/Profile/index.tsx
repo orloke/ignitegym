@@ -2,17 +2,19 @@ import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
-import { Center, Heading, Skeleton, Text, VStack } from 'native-base'
-import { useState } from 'react'
-import { Alert, ScrollView, TouchableOpacity } from 'react-native'
-import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
+import * as ImagePicker from 'expo-image-picker'
+import { Center, Heading, Skeleton, Text, VStack, useToast } from 'native-base'
+import { useState } from 'react'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 const PHOTO_SIZE = 33
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
   const [userPhoto, setUserPhoto] = useState('https://github.com/orloke.png')
+
+  const toast = useToast()
 
   const handleUserPhotoSelect = async () => {
     setPhotoIsLoading(true)
@@ -29,9 +31,11 @@ export function Profile() {
           photoSelected.assets[0].uri
         )
         if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5) {
-          return Alert.alert(
-            'Essa imagem é muito grande. Escolha uma até 5 MB.'
-          )
+          return toast.show({
+            title: 'Essa imagem é muito grande. Escolha uma de até 5 MB.',
+            placement: 'top',
+            bgColor: 'red.500'
+          })
         }
         setUserPhoto(photoSelected.assets[0].uri)
       }
