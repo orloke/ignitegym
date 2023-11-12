@@ -16,10 +16,19 @@ type FormDataProps = {
 export function SignUp() {
   const navigation = useNavigation()
 
-  const { control, handleSubmit } = useForm<FormDataProps>()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>()
 
-  const handleSignUp = async ({name, email, password, password_confirm}:FormDataProps) => {
-    console.log({name, email, password, password_confirm})
+  const handleSignUp = async ({
+    name,
+    email,
+    password,
+    password_confirm,
+  }: FormDataProps) => {
+    console.log({ name, email, password, password_confirm })
   }
 
   const handleGoBack = () => {
@@ -61,8 +70,12 @@ export function SignUp() {
                 placeholder="Nome"
                 onChangeText={field.onChange}
                 value={field.value}
+                errorMessage={errors.name?.message}
               />
             )}
+            rules={{
+              required: 'Informe o nome.',
+            }}
           />
 
           <Controller
@@ -75,8 +88,16 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={field.onChange}
                 value={field.value}
+                errorMessage={errors.email?.message}
               />
             )}
+            rules={{
+              required: 'Informe o email.',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido',
+              },
+            }}
           />
 
           <Controller
