@@ -3,10 +3,21 @@ import LogoSvg from '@assets/logo.svg'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { useNavigation } from '@react-navigation/native'
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
+import {
+  Alert,
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  Toast,
+  VStack,
+} from 'native-base'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { api } from '@services/api'
+import axios from 'axios'
 
 type FormDataProps = {
   name: string
@@ -39,13 +50,29 @@ export function SignUp() {
     resolver: yupResolver(signUpSchema),
   })
 
-  const handleSignUp = async ({
-    name,
-    email,
-    password,
-    password_confirm,
-  }: FormDataProps) => {
-    console.log({ name, email, password, password_confirm })
+  const handleSignUp = async ({ name, email, password }: FormDataProps) => {
+    try {
+      const { data } = await api.post('/users', {
+        name,
+        email,
+        password,
+      })
+      console.log(data)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.message)
+        Toast.show({
+          description: error.response?.data.message,
+          placement: 'top',
+          _description: {
+            color: 'red.500',
+            fontWeight: 'bold',
+            px: 10,
+            py: 1,
+          },
+        })
+      }
+    }
   }
 
   const handleGoBack = () => {
