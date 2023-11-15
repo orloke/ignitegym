@@ -13,6 +13,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from '@services/api'
 import { AppError } from '@utils/AppError'
+import defaultUserPhotoImg from '@assets/userPhotoDefault.png'
 
 const PHOTO_SIZE = 33
 
@@ -63,7 +64,6 @@ export function Profile() {
 
   const [isUpdating, setIsUpdating] = useState(false)
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
-  const [userPhoto, setUserPhoto] = useState('https://github.com/orloke.png')
 
   const toast = useToast()
 
@@ -106,11 +106,15 @@ export function Profile() {
 
         userPhotoUploadForm.append('avatar', photoFile)
 
-        await api.patch('/users/avatar', userPhotoUploadForm, {
+        const { data } = await api.patch('/users/avatar', userPhotoUploadForm, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
+
+        const userUpdated = user
+        userUpdated.avatar = data.avatar
+        updateUserProfile(userUpdated)
 
         toast.show({
           title: 'Foto autalizada!',
@@ -170,7 +174,11 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                  : defaultUserPhotoImg
+              }
               alt="imagem do usuario"
               size={PHOTO_SIZE}
             />
