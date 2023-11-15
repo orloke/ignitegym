@@ -14,7 +14,7 @@ export function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [groups, setGroups] = useState<string[]>()
   const [exercises, setExercises] = useState<ExercisesDTO[]>([])
-  const [groupSelected, setGroupSelected] = useState('Costas')
+  const [groupSelected, setGroupSelected] = useState('')
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
@@ -28,6 +28,7 @@ export function Home() {
     try {
       const { data } = await api.get('/groups')
       setGroups(data)
+      setGroupSelected(data[0])
     } catch (error) {
       const isAppError = error instanceof AppError
       const title = isAppError
@@ -41,11 +42,11 @@ export function Home() {
     }
   }
 
-  const fetchExercisesByGroup = async (groupName: string) => {
+  const fetchExercisesByGroup = async () => {
     try {
       setIsLoading(true)
 
-      const { data } = await api.get(`/exercises/bygroup/${groupName}`)
+      const { data } = await api.get(`/exercises/bygroup/${groupSelected}`)
       // console.log(JSON.stringify(data, null, 2))
 
       setExercises(data)
@@ -70,7 +71,7 @@ export function Home() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchExercisesByGroup(groupSelected)
+      fetchExercisesByGroup()
     }, [groupSelected])
   )
 
