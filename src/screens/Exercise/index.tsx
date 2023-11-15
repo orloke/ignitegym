@@ -11,15 +11,23 @@ import {
 } from 'native-base'
 import { Feather } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
 import BodySvg from '@assets/body.svg'
 import SerieSvg from '@assets/series.svg'
 import RepetitionsSvg from '@assets/repetitions.svg'
 import { Button } from '@components/Button'
 
+type RoutePramsProps = {
+  exerciseId: number
+}
+
 export function Exercise() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const route = useRoute()
+
+  const { exerciseId } = route.params as RoutePramsProps
 
   const handleGoBack = () => {
     navigation.goBack()
@@ -38,7 +46,12 @@ export function Exercise() {
           mb={8}
           alignItems="center"
         >
-          <Heading flexShrink={1} color="gray.100" fontSize="lg" fontFamily='heading'>
+          <Heading
+            flexShrink={1}
+            color="gray.100"
+            fontSize="lg"
+            fontFamily="heading"
+          >
             Puxada frontal
           </Heading>
 
