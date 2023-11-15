@@ -6,6 +6,7 @@ import { ReactNode, createContext, useEffect, useState } from 'react'
 export type AuthContextDataProps = {
   user: UserDTO
   signIn: (email: string, password: string) => Promise<void>
+  isLoadingUserStorageData: boolean
 }
 
 export const AuthContext = createContext<AuthContextDataProps>(
@@ -18,6 +19,7 @@ type Props = {
 
 export function AuthContextProvider({ children }: Props) {
   const [user, setUser] = useState({} as UserDTO)
+  const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -32,22 +34,29 @@ export function AuthContextProvider({ children }: Props) {
   }
 
   const loadUserData = async () => {
-    const userLogged = await storageUserGet()
+    try {
+      const userLogged = await storageUserGet()
 
-    if (userLogged) {
-      setUser(userLogged)
+      if (userLogged) {
+        setUser(userLogged)
+      }
+    } catch (error) {
+      throw error
+    }finally{
+      setIsLoadingUserStorageData(false)
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     loadUserData()
-  },[])
+  }, [])
 
   return (
     <AuthContext.Provider
       value={{
         user,
         signIn,
+        isLoadingUserStorageData,
       }}
     >
       {children}
