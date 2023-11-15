@@ -88,7 +88,35 @@ export function Profile() {
             bgColor: 'red.500',
           })
         }
-        setUserPhoto(photoSelected.assets[0].uri)
+
+        const fileExtension = photoSelected.assets[0].uri.split('.').pop()
+        const name = `${user.name}.${fileExtension}`
+          .toLowerCase()
+          .replace(/\s/g, '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+
+        const photoFile = {
+          name,
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+
+        userPhotoUploadForm.append('avatar', photoFile)
+
+        await api.patch('/users/avatar', userPhotoUploadForm, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+
+        toast.show({
+          title: 'Foto autalizada!',
+          placement: 'top',
+          bgColor: 'green.700',
+        })
       }
     } catch (error) {
       console.log(error)
@@ -122,7 +150,7 @@ export function Profile() {
         placement: 'top',
         bgColor: 'red.500',
       })
-    }finally{
+    } finally {
       setIsUpdating(false)
     }
   }
