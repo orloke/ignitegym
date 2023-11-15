@@ -11,6 +11,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '@hooks/useAuth'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 
 const PHOTO_SIZE = 33
 
@@ -34,11 +36,14 @@ const profileSchema = yup.object({
     .nullable()
     .transform((value) => (!!value ? value : null))
     .oneOf([yup.ref('password')], 'As senhas são diferentes.')
-    .when('password',{
-      is: (Field:any) => Field,
+    .when('password', {
+      is: (Field: any) => Field,
       then: (schema) =>
-			schema.nullable().required('Informe a confirmação da senha.'),
-    })
+        schema
+          .nullable()
+          .required('Informe a confirmação da senha.')
+          .transform((value) => (!!value ? value : null)),
+    }),
 })
 
 export function Profile() {
@@ -56,6 +61,7 @@ export function Profile() {
     resolver: yupResolver(profileSchema) as any,
   })
 
+  const [isUpdating, setIsUpdating] = useState(false)
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
   const [userPhoto, setUserPhoto] = useState('https://github.com/orloke.png')
 
@@ -92,7 +98,29 @@ export function Profile() {
   }
 
   const handleProfileUpdate = async (data: FormDataProps) => {
-    console.log(JSON.stringify(data, null, 2))
+    try {
+      setIsUpdating(true)
+
+      await api.put('/users', data)
+
+      toast.show({
+        title: 'Perfil atualizado com sucesso!',
+        placement: 'top',
+        bgColor: 'green.700',
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível atualizar os dados. Tente novamente mais tarde!'
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    }finally{
+      setIsUpdating(false)
+    }
   }
 
   return (
@@ -207,6 +235,7 @@ export function Profile() {
             title="Atualizar"
             mt={4}
             onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isUpdating}
           />
         </Center>
       </ScrollView>
