@@ -51,14 +51,13 @@ export function SignIn() {
       const title = isAppError
         ? error.message
         : 'Não foi possível entrar. Tente novamente mais tarde.'
+      setIsloading(false)
 
       toast.show({
         title,
         placement: 'top',
         bgColor: 'red.500',
       })
-    } finally {
-      setIsloading(false)
     }
   }
 
@@ -116,7 +115,11 @@ export function SignIn() {
             )}
           />
 
-          <Button title="Acessar" onPress={handleSubmit(handleSignIn)} isLoading={isLoading} />
+          <Button
+            title="Acessar"
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Center mt={24}>
