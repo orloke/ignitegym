@@ -1,8 +1,10 @@
 import { UserDTO } from '@dtos/UserDTO'
+import { api } from '@services/api'
 import { ReactNode, createContext, useState } from 'react'
 
 export type AuthContextDataProps = {
   user: UserDTO
+  signIn: (email: string, password: string) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextDataProps>(
@@ -14,16 +16,24 @@ type Props = {
 }
 
 export function AuthContextProvider({ children }: Props) {
-  const [user, setUser] = useState({
-    id: '1',
-    name: 'Júnior Dering',
-    email: 'júnior@gmail.com',
-    avatar: '',
-  })
+  const [user, setUser] = useState({} as UserDTO)
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post('/sessions', { email, password })
+      if (data.user) {
+        setUser(data.user)
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        signIn,
       }}
     >
       {children}

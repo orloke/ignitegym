@@ -6,6 +6,7 @@ import { Button } from '@components/Button'
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { useForm, Controller } from 'react-hook-form'
+import { useAuth } from '@hooks/useAuth'
 
 type FormDataProps = {
   email: string
@@ -14,6 +15,8 @@ type FormDataProps = {
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  const { signIn } = useAuth()
 
   const {
     control,
@@ -26,7 +29,7 @@ export function SignIn() {
   }
 
   const handleSignIn = async ({ email, password }: FormDataProps) => {
-    console.log({ email, password })
+    await signIn(email, password)
   }
 
   return (
@@ -72,7 +75,7 @@ export function SignIn() {
           <Controller
             control={control}
             name="password"
-            rules={{required: 'Informe a senha.'}}
+            rules={{ required: 'Informe a senha.' }}
             render={({ field }) => (
               <Input
                 placeholder="Senha"
